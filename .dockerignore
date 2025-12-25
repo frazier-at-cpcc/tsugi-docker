@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker files
+docker-compose*.yml
+.dockerignore
+
+# GitHub
+.github
+
+# Local development
+.env
+.env.local
+*.log
+
+# Temporary files
+tmp/
+temp/

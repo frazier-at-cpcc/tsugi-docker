@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  tsugi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tsugi:latest
+    container_name: tsugi
+    ports:
+      - "8080:80"
+      - "8443:443"
+      - "3306:3306"
+    environment:
+      # Database configuration
+      TSUGI_DB_HOST: "127.0.0.1"
+      TSUGI_DB_PORT: "3306"
+      TSUGI_DB_NAME: "tsugi"
+      TSUGI_DB_USER: "ltiuser"
+      TSUGI_DB_PASSWORD: "ltipassword"
+
+      # Application configuration
+      TSUGI_SERVICENAME: "My Tsugi"
+      TSUGI_WWWROOT: "http://localhost:8080/tsugi"
+      TSUGI_ADMIN_PASSWORD: "admin"
+      TSUGI_DEVELOPER_MODE: "true"
+      TSUGI_TIMEZONE: "America/New_York"
+
+      # Security secrets (CHANGE THESE IN PRODUCTION!)
+      # Leave as defaults to auto-generate random secrets
+      # TSUGI_COOKIE_SECRET: "your-cookie-secret"
+      # TSUGI_SESSION_SALT: "your-session-salt"
+      # TSUGI_MAIL_SECRET: "your-mail-secret"
+    volumes:
+      # Persist database data
+      - tsugi_mysql_data:/var/lib/mysql
+      # Persist blob storage
+      - tsugi_blobs:/tsugi-data
+      # Optional: Mount custom config
+      # - ./config.php:/var/www/html/tsugi/config.php:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/tsugi/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  tsugi_mysql_data:
+    driver: local
+  tsugi_blobs:
+    driver: local
